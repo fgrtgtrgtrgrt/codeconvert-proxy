@@ -20,19 +20,22 @@ app.post("/generate", async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Origin": "https://www.codeconvert.ai", // this helps simulate a real browser call
-        "Referer": "https://www.codeconvert.ai/lua-code-generator"
+        "Accept": "*/*",
+        "Referer": "https://www.codeconvert.ai/lua-code-generator",
+        "Origin": "https://www.codeconvert.ai",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
       },
-      body: JSON.stringify({ prompt, language })
+      body: JSON.stringify({
+        prompt,
+        language
+      })
     });
 
-    const text = await upstreamResponse.text(); // sometimes it's not JSON
-    console.log("Upstream status:", upstreamResponse.status);
-    console.log("Upstream response:", text);
+    const text = await upstreamResponse.text();
 
     res.status(upstreamResponse.status).send(text);
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error("Proxy error:", error);
     res.status(500).json({ error: "Proxy error" });
   }
 });
