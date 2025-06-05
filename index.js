@@ -3,8 +3,6 @@ import fetch from "node-fetch";
 import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-
 app.use(cors());
 app.use(express.json());
 
@@ -21,24 +19,23 @@ app.post("/generate", async (req, res) => {
       headers: {
         "Content-Type": "application/json",
         "Accept": "*/*",
+        "Origin": "https://www.codeconvert.ai",
         "Referer": "https://www.codeconvert.ai/lua-code-generator",
-        "Origin": "https://www.codeconvert.ai"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
       },
-      body: JSON.stringify({
-        prompt,
-        language
-      })
+      body: JSON.stringify({ prompt, language })
     });
 
     const text = await upstreamResponse.text();
-
     res.status(upstreamResponse.status).send(text);
-  } catch (error) {
-    console.error("Proxy error:", error);
+  } catch (err) {
+    console.error("Error contacting upstream:", err);
     res.status(500).json({ error: "Proxy error" });
   }
 });
 
 app.get("/", (req, res) => res.send("✅ Proxy is live"));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server running.");
+});
