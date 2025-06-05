@@ -9,19 +9,30 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/generate", async (req, res) => {
-  try {
-    const { prompt, language } = req.body;
+  const { prompt, language } = req.body;
 
-    const response = await fetch("https://www.codeconvert.ai/api/free-generate", {
+  if (!prompt || !language) {
+    return res.status(400).json({ error: "Missing prompt or language" });
+  }
+
+  try {
+    const upstreamResponse = await fetch("https://www.codeconvert.ai/api/free-generate", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Origin": "https://www.codeconvert.ai", // this helps simulate a real browser call
+        "Referer": "https://www.codeconvert.ai/lua-code-generator"
+      },
       body: JSON.stringify({ prompt, language })
     });
 
-    const data = await response.json();
-    res.json(data);
-  } catch (err) {
-    console.error("Upstream error:", err);
+    const text = await upstreamResponse.text(); // sometimes it's not JSON
+    console.log("Upstream status:", upstreamResponse.status);
+    console.log("Upstream response:", text);
+
+    res.status(upstreamResponse.status).send(text);
+  } catch (error) {
+    console.error("Fetch error:", error);
     res.status(500).json({ error: "Proxy error" });
   }
 });
