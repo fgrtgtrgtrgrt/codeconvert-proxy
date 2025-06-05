@@ -22,8 +22,7 @@ app.post("/generate", async (req, res) => {
         "Content-Type": "application/json",
         "Accept": "*/*",
         "Referer": "https://www.codeconvert.ai/lua-code-generator",
-        "Origin": "https://www.codeconvert.ai",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        "Origin": "https://www.codeconvert.ai"
       },
       body: JSON.stringify({
         prompt,
