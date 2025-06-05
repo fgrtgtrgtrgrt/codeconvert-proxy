@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
@@ -13,7 +12,9 @@ app.post("/generate", async (req, res) => {
       "https://wfhbqniijcsamdp2v3i6nts4ke0ebkyj.lambda-url.us-east-1.on.aws/api_ai_playground/ai/playground/ai/trigger",
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(req.body)
       }
     );
@@ -26,4 +27,4 @@ app.post("/generate", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Proxy running on ${PORT}`));
+app.listen(PORT, () => console.log(`Proxy running on port ${PORT}`));
